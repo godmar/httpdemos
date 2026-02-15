@@ -1,0 +1,33 @@
+
+How I created this directory:
+
+
+$ npx fastify-cli generate httpdemos --lang=ts
+Need to install the following packages:
+fastify-cli@7.4.1
+Ok to proceed? (y) y
+generated README.md
+generated .gitignore
+generated tsconfig.json
+generated test/helper.ts
+generated src/app.ts
+generated test/tsconfig.json
+generated test/routes/example.test.ts
+generated test/plugins/support.test.ts
+generated src/plugins/README.md
+generated src/routes/README.md
+generated test/routes/root.test.ts
+generated src/plugins/sensible.ts
+generated src/plugins/support.ts
+generated src/routes/root.ts
+generated src/routes/example/index.ts
+--> reading package.json in httpdemos
+edited package.json, saving
+saved package.json
+--> project httpdemos generated successfully
+run 'npm install' to install the dependencies
+run 'npm start' to start the application
+run 'npm build:ts' to compile the typescript application
+run 'npm run dev' to start the application with pino-pretty pretty logging (not suitable for production)
+run 'npm test' to execute the unit tests
+
