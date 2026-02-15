@@ -11,6 +11,13 @@ npm run dev
 
 Open: <http://localhost:3000>
 
+## Project Structure
+
+- `src/routes/stations/*`: station page route plugins
+- `src/routes/api/*`: API route plugins for protocol behaviors
+- `src/public/*`: static HTML/CSS/JS assets served under `/public/*`
+- `src/plugins/static.ts`: static asset plugin registration
+
 ## Stations
 
 1. `GET /stations/forms` - HTML GET/POST form submission
@@ -54,4 +61,4 @@ curl -i http://localhost:3000/api/sse/clock?count=3\&intervalMs=200
 ## Notes
 
 - Data is in-memory only; restart clears todos/sessions/tokens.
-- For this offline environment, JWT signing/verification is implemented with Node `crypto`.
+- JWT signing/verification uses the `jsonwebtoken` package.

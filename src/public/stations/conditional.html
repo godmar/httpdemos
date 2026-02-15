@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Conditional Requests Station</title>
+  <link rel="stylesheet" href="/public/styles.css" />
+</head>
+<body>
+  <main>
+    <h1>Conditional Requests (ETag / If-None-Match)</h1>
+    <pre>curl -i http://localhost:3000/api/conditional/resource</pre>
+    <pre>curl -i http://localhost:3000/api/conditional/resource -H 'If-None-Match: "...etag..."'</pre>
+    <p><a href="/">Back</a></p>
+  </main>
+</body>
+</html>

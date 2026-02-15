@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cache Station</title>
+  <link rel="stylesheet" href="/public/styles.css" />
+</head>
+<body>
+  <main>
+    <h1>Cache-Control Station</h1>
+    <pre>GET /api/cache/public   -> Cache-Control: public, max-age=60
+GET /api/cache/private  -> Cache-Control: private, max-age=30
+GET /api/cache/no-store -> Cache-Control: no-store</pre>
+    <p><a href="/">Back</a></p>
+  </main>
+</body>
+</html>

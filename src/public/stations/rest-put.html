@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PUT REST Station</title>
+  <link rel="stylesheet" href="/public/styles.css" />
+</head>
+<body>
+  <main>
+    <h1>PUT Mini REST API</h1>
+    <p>Observe idempotency by repeating the same PUT request.</p>
+    <pre>PUT /api/todos/:id
+GET /api/todos/:id
+DELETE /api/todos/:id</pre>
+    <p class="small"><code>curl -i -X PUT http://localhost:3000/api/todos/1 -H 'content-type: application/json' -d '{"title":"Read RFC","done":false}'</code></p>
+    <p><a href="/">Back</a></p>
+  </main>
+</body>
+</html>

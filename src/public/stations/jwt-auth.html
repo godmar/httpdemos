@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>JWT Auth Station</title>
+  <link rel="stylesheet" href="/public/styles.css" />
+</head>
+<body>
+  <main>
+    <h1>JWT Access + Rotating Refresh</h1>
+    <section>
+      <label>Username: <input id="user" value="api-user" /></label>
+      <button id="login">Login</button>
+      <button id="me">GET /me</button>
+      <button id="refresh">Refresh</button>
+      <button id="logout">Logout</button>
+      <pre id="out">(waiting)</pre>
+    </section>
+    <p class="small">JWT signing/verification in this station uses <code>jsonwebtoken</code>.</p>
+    <p><a href="/">Back</a></p>
+  </main>
+  <script src="/public/js/jwt-auth.js"></script>
+</body>
+</html>

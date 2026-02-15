@@ -1,8 +1,15 @@
 # Stations Notes
 
-This folder can hold station-specific route modules. In this implementation,
-station routes are currently registered from `src/routes/root.ts` so all demo
-paths are easy to inspect in one place.
+Each station has its own Fastify route plugin under this folder:
+
+- `src/routes/stations/<station>/index.ts` for station page routes
+- `src/routes/api/<topic>/index.ts` for protocol API endpoints
+
+Static assets are served from `src/public/` through `@fastify/static`:
+
+- `src/public/stations/*.html` for pages
+- `src/public/js/*.js` for browser logic
+- `src/public/styles.css` for shared styling
 
 Topics covered:
 

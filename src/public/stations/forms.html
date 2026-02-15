@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Forms Station</title>
+  <link rel="stylesheet" href="/public/styles.css" />
+</head>
+<body>
+  <main>
+    <h1>HTML GET/POST Forms</h1>
+    <p class="small">Demonstrates browser form encoding and query strings.</p>
+
+    <section>
+      <h2>GET form (query string)</h2>
+      <form method="get" action="/stations/forms/search">
+        <label>Search term: <input name="q" value="http headers" /></label>
+        <button type="submit">Submit GET</button>
+      </form>
+    </section>
+
+    <section>
+      <h2>POST form (urlencoded)</h2>
+      <form method="post" action="/stations/forms/login">
+        <label>Username: <input name="username" value="alice" /></label>
+        <label>Password: <input type="password" name="password" value="secret" /></label>
+        <button type="submit">Submit POST</button>
+      </form>
+    </section>
+
+    <p><a href="/">Back</a></p>
+  </main>
+</body>
+</html>

@@ -25,8 +25,8 @@ test('forms station handles GET query and POST urlencoded body', async (t) => {
     payload: 'username=alice&password=secret'
   })
   assert.equal(postRes.statusCode, 200)
-  assert.match(postRes.payload, /Form POST Received/)
-  assert.match(postRes.payload, /alice/)
+  assert.equal(postRes.json().station, 'forms-post')
+  assert.equal(postRes.json().fields.username, 'alice')
 })
 
 test('fetch-json station enforces json content-type', async (t) => {

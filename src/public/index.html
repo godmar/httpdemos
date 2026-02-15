@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HTTP Protocol Stations</title>
+  <link rel="stylesheet" href="/public/styles.css" />
+</head>
+<body>
+  <main>
+    <h1>HTTP Protocol Stations</h1>
+    <p>Minimal demos focused on HTTP methods, headers, auth, caching, and streaming.</p>
+
+    <section>
+      <h2>Stations</h2>
+      <div class="grid">
+        <article><a href="/stations/forms">1) HTML GET/POST forms</a></article>
+        <article><a href="/stations/fetch-json">2) fetch JSON POST</a></article>
+        <article><a href="/stations/rest-put">3) PUT mini REST API</a></article>
+        <article><a href="/stations/cache">4) Cache-Control headers</a></article>
+        <article><a href="/stations/chunked">5) Chunked transfer</a></article>
+        <article><a href="/stations/sse">6) Server-Sent Events</a></article>
+        <article><a href="/stations/session-auth">7) Session auth + CSRF</a></article>
+        <article><a href="/stations/jwt-auth">8) JWT + rotating refresh</a></article>
+        <article><a href="/stations/conditional">9) Conditional requests</a></article>
+        <article><a href="/stations/cors">10) CORS preflight</a></article>
+      </div>
+    </section>
+
+    <section>
+      <h2>Quick curl</h2>
+      <pre>curl -i http://localhost:3000/api/cache/public</pre>
+      <pre>curl -i -X PUT http://localhost:3000/api/todos/42 -H 'content-type: application/json' -d '{"title":"Learn PUT","done":false}'</pre>
+    </section>
+  </main>
+</body>
+</html>
