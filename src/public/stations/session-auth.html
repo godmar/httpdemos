@@ -17,8 +17,19 @@
       <button id="logout">Logout</button>
       <pre id="out">(waiting)</pre>
     </section>
+    <section>
+      <h2>Inspect with curl</h2>
+      <p class="small">Current server origin: <code id="session-origin">(loading...)</code></p>
+      <pre id="curl-session-login">curl -i ...</pre>
+      <pre id="curl-session-me">curl -i ...</pre>
+      <pre id="curl-session-denied">curl -i ...</pre>
+      <pre id="curl-session-csrf">curl -i ...</pre>
+      <pre id="curl-session-logout">curl -i ...</pre>
+      <p class="small">The CSRF example uses <code>jq</code> to extract <code>csrfToken</code> from JSON.</p>
+    </section>
     <p><a href="/">Back</a></p>
   </main>
   <script src="/public/js/session-auth.js"></script>
+  <script src="/public/js/session-auth-curl.js"></script>
 </body>
 </html>

@@ -11,12 +11,19 @@
     <h1>HTTP Protocol Stations</h1>
     <p>Minimal demos focused on HTTP methods, headers, auth, caching, and streaming.</p>
 
+    <section class="network-card">
+      <h2>Open on Local Network</h2>
+      <p class="small">Scan this barcode from another device on your LAN.</p>
+      <p><code id="network-url">(loading URL...)</code></p>
+      <img id="network-barcode" class="barcode" alt="Barcode for server URL" />
+    </section>
+
     <section>
       <h2>Stations</h2>
       <div class="grid">
         <article><a href="/stations/forms">1) HTML GET/POST forms</a></article>
         <article><a href="/stations/fetch-json">2) fetch JSON POST</a></article>
-        <article><a href="/stations/rest-put">3) PUT mini REST API</a></article>
+        <article><a href="/stations/rest-put">3) Mini REST API</a></article>
         <article><a href="/stations/cache">4) Cache-Control headers</a></article>
         <article><a href="/stations/chunked">5) Chunked transfer</a></article>
         <article><a href="/stations/sse">6) Server-Sent Events</a></article>
@@ -29,9 +36,11 @@
 
     <section>
       <h2>Quick curl</h2>
-      <pre>curl -i http://localhost:3000/api/cache/public</pre>
-      <pre>curl -i -X PUT http://localhost:3000/api/todos/42 -H 'content-type: application/json' -d '{"title":"Learn PUT","done":false}'</pre>
+      <pre id="index-curl-cache">curl -i ...</pre>
+      <pre id="index-curl-put">curl -i -X PUT ...</pre>
     </section>
   </main>
+  <script src="/public/js/index-commands.js"></script>
+  <script src="/public/js/frontpage-barcode.js"></script>
 </body>
 </html>

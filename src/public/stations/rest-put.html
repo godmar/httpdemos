@@ -3,18 +3,37 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PUT REST Station</title>
+  <title>Mini REST API Station</title>
   <link rel="stylesheet" href="/public/styles.css" />
 </head>
 <body>
   <main>
-    <h1>PUT Mini REST API</h1>
-    <p>Observe idempotency by repeating the same PUT request.</p>
-    <pre>PUT /api/todos/:id
-GET /api/todos/:id
-DELETE /api/todos/:id</pre>
-    <p class="small"><code>curl -i -X PUT http://localhost:3000/api/todos/1 -H 'content-type: application/json' -d '{"title":"Read RFC","done":false}'</code></p>
+    <h1>Mini REST API</h1>
+    <p>This station demonstrates collection and item endpoints, plus why <code>PUT</code> is idempotent.</p>
+    <p>Use <code>POST /api/todos</code> to create a new item with a server-generated ID, then use <code>PUT /api/todos/:id</code> to upsert a known item ID repeatedly with the same body.</p>
+
+    <pre>POST /api/todos        (create)
+GET  /api/todos        (collection read)
+PUT  /api/todos/:id    (idempotent upsert)
+GET  /api/todos/:id    (item read)
+DELETE /api/todos/:id  (item delete)</pre>
+
+    <h2>Example Workflow</h2>
+    <p class="small">Current server origin: <code id="api-origin">(loading...)</code></p>
+    <pre id="curl-post">curl -i -X POST ...</pre>
+
+    <pre id="curl-list">curl -i ...</pre>
+
+    <pre id="curl-put">curl -i -X PUT ...</pre>
+
+    <h2>Browser Collection Read</h2>
+    <p class="small">Use this button to call <code>GET /api/todos</code> and display the current collection.</p>
+    <button id="load-todos" type="button">Load Todos</button>
+    <pre id="todos-output">(not loaded)</pre>
+
+    <p class="small">Repeat the same PUT request and the server state remains the same. That is the idempotency property of PUT.</p>
     <p><a href="/">Back</a></p>
   </main>
+  <script src="/public/js/rest-put.js"></script>
 </body>
 </html>

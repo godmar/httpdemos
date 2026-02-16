@@ -9,7 +9,7 @@ const chunkedApi: FastifyPluginAsync = async (fastify): Promise<void> => {
   fastify.get('/time', async (request, reply) => {
     const query = request.query as { count?: string; intervalMs?: string }
     const count = parsePositiveInt(query.count, 4)
-    const intervalMs = parsePositiveInt(query.intervalMs, 250)
+    const intervalMs = parsePositiveInt(query.intervalMs, 1000)
 
     reply.hijack()
     reply.raw.statusCode = 200
@@ -20,10 +20,10 @@ const chunkedApi: FastifyPluginAsync = async (fastify): Promise<void> => {
     let sent = 0
     const timer = setInterval(() => {
       sent += 1
-      reply.raw.write(`chunk ${sent}: ${new Date().toISOString()}\\n`)
+      reply.raw.write(`chunk ${sent}: ${new Date().toISOString()}\n`)
       if (sent >= count) {
         clearInterval(timer)
-        reply.raw.end('done\\n')
+        reply.raw.end('done\n')
       }
     }, intervalMs)
 

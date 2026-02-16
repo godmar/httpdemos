@@ -3,6 +3,39 @@ import { ensureJsonBody } from '../../../lib/http'
 import { store } from '../../../lib/stores'
 
 const todosApi: FastifyPluginAsync = async (fastify): Promise<void> => {
+  fastify.post('/', async (request, reply) => {
+    const parsed = ensureJsonBody(request)
+    if (!parsed.ok) {
+      reply.code(415)
+      return { error: parsed.error }
+    }
+
+    const title = parsed.body.title
+    const done = parsed.body.done
+
+    if (typeof title !== 'string' || title.trim() === '') {
+      reply.code(400)
+      return { error: 'title must be a non-empty string' }
+    }
+    if (done !== undefined && typeof done !== 'boolean') {
+      reply.code(400)
+      return { error: 'done must be a boolean when provided' }
+    }
+
+    const todo = store.createTodo(title.trim(), typeof done === 'boolean' ? done : false)
+    reply.code(201)
+    reply.header('Location', `/api/todos/${todo.id}`)
+    return { todo }
+  })
+
+  fastify.get('/', async () => {
+    const todos = store.listTodos()
+    return {
+      count: todos.length,
+      todos
+    }
+  })
+
   fastify.put('/:id', async (request, reply) => {
     const parsed = ensureJsonBody(request)
     if (!parsed.ok) {

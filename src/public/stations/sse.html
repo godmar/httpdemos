@@ -13,8 +13,14 @@
       <button id="open">Open Stream</button>
       <pre id="out">(no events yet)</pre>
     </section>
+    <section>
+      <h2>Inspect with curl</h2>
+      <p class="small">Current server origin: <code id="sse-origin">(loading...)</code></p>
+      <pre id="curl-sse">curl -N ...</pre>
+    </section>
     <p><a href="/">Back</a></p>
   </main>
   <script src="/public/js/sse.js"></script>
+  <script src="/public/js/sse-curl.js"></script>
 </body>
 </html>

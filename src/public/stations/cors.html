@@ -10,11 +10,10 @@
   <main>
     <h1>CORS + Preflight</h1>
     <p class="small">Demo endpoint allows only <code>Origin: https://example.edu</code>.</p>
-    <pre>curl -i -X OPTIONS http://localhost:3000/api/cors/echo \\
-  -H 'Origin: https://example.edu' \\
-  -H 'Access-Control-Request-Method: POST' \\
-  -H 'Access-Control-Request-Headers: content-type'</pre>
+    <p class="small">Current server origin: <code id="cors-origin">(loading...)</code></p>
+    <pre id="curl-cors-options">curl -i -X OPTIONS ...</pre>
     <p><a href="/">Back</a></p>
   </main>
+  <script src="/public/js/cors.js"></script>
 </body>
 </html>

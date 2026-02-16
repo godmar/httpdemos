@@ -11,15 +11,31 @@
 
 body {
   margin: 0;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.5;
   background: linear-gradient(180deg, #eef4fb 0%, var(--bg) 55%, #f8f2e8 100%);
   color: var(--ink);
 }
 
 main {
   max-width: 980px;
-  margin: 2rem auto;
-  padding: 0 1rem;
+  margin: 2.75rem auto 3.25rem;
+  padding: 0 1.25rem;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 0.85rem;
+}
+
+h2 {
+  margin-bottom: 0.65rem;
 }
 
 section,
@@ -33,12 +49,18 @@ pre {
 
 section,
 article {
-  padding: 1rem 1.2rem;
-  margin-bottom: 1rem;
+  padding: 1.2rem 1.4rem;
+  margin-bottom: 1.25rem;
+}
+
+form {
+  padding: 0.95rem 1rem;
+  margin: 0.85rem 0 0.35rem;
 }
 
 pre {
-  padding: 0.8rem;
+  margin: 0.75rem 0;
+  padding: 0.9rem;
   overflow-x: auto;
 }
 
@@ -46,7 +68,7 @@ a { color: var(--accent); }
 
 label {
   display: block;
-  margin: 0.5rem 0;
+  margin: 0.75rem 0;
 }
 
 input,
@@ -61,6 +83,8 @@ textarea {
 button {
   background: #e7eef8;
   cursor: pointer;
+  margin-right: 0.45rem;
+  margin-bottom: 0.45rem;
 }
 
 code {
@@ -76,6 +100,20 @@ code {
 
 .grid {
   display: grid;
-  gap: 0.7rem;
+  gap: 0.95rem;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.network-card {
+  text-align: center;
+}
+
+.barcode {
+  display: block;
+  width: 240px;
+  height: 240px;
+  margin: 0.85rem auto 0.2rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
 }

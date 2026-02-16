@@ -15,6 +15,14 @@
       <button id="send">Send JSON</button>
       <pre id="out">(waiting)</pre>
     </section>
+    <section>
+      <h2>JS Request Code</h2>
+      <pre><code>const res = await fetch('/api/fetch-json/echo', {
+  method: 'POST',
+  headers: { 'content-type': 'application/json' },
+  body: JSON.stringify({ message })
+})</code></pre>
+    </section>
     <p><a href="/">Back</a></p>
   </main>
   <script src="/public/js/fetch-json.js"></script>

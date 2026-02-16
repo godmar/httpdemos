@@ -20,11 +20,11 @@ const sseApi: FastifyPluginAsync = async (fastify): Promise<void> => {
     let sent = 0
     const timer = setInterval(() => {
       sent += 1
-      reply.raw.write('event: tick\\n')
-      reply.raw.write(`data: ${JSON.stringify({ index: sent, at: new Date().toISOString() })}\\n\\n`)
+      reply.raw.write('event: tick\n')
+      reply.raw.write(`data: ${JSON.stringify({ index: sent, at: new Date().toISOString() })}\n\n`)
       if (sent >= count) {
         clearInterval(timer)
-        reply.raw.write('event: done\\ndata: complete\\n\\n')
+        reply.raw.write('event: done\ndata: complete\n\n')
         reply.raw.end()
       }
     }, intervalMs)

@@ -17,9 +17,21 @@
       <button id="logout">Logout</button>
       <pre id="out">(waiting)</pre>
     </section>
+    <section>
+      <h2>Inspect with curl</h2>
+      <p class="small">Current server origin: <code id="jwt-origin">(loading...)</code></p>
+      <pre id="curl-jwt-login">LOGIN_JSON=...</pre>
+      <pre id="curl-jwt-me">curl -i ...</pre>
+      <pre id="curl-jwt-refresh">REFRESH_JSON=...</pre>
+      <pre id="curl-jwt-me2">curl -i ...</pre>
+      <pre id="curl-jwt-replay">curl -i ...</pre>
+      <pre id="curl-jwt-logout">curl -i ...</pre>
+      <p class="small">This flow uses <code>jq</code> to extract token values and stores cookies in <code>jwt-cookies.txt</code>.</p>
+    </section>
     <p class="small">JWT signing/verification in this station uses <code>jsonwebtoken</code>.</p>
     <p><a href="/">Back</a></p>
   </main>
   <script src="/public/js/jwt-auth.js"></script>
+  <script src="/public/js/jwt-auth-curl.js"></script>
 </body>
 </html>

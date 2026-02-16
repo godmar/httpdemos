@@ -9,10 +9,27 @@
 <body>
   <main>
     <h1>Cache-Control Station</h1>
+    <p>This station shows how response cache headers change browser/proxy caching behavior.</p>
+
+    <h2>Endpoints and Policies</h2>
     <pre>GET /api/cache/public   -> Cache-Control: public, max-age=60
 GET /api/cache/private  -> Cache-Control: private, max-age=30
 GET /api/cache/no-store -> Cache-Control: no-store</pre>
+
+    <h2>What These Headers Mean</h2>
+    <p><code>public, max-age=60</code>: any cache (browser or shared proxy) may reuse this response for 60 seconds.</p>
+    <p><code>private, max-age=30</code>: only a private cache (typically the browser) should cache it, for 30 seconds.</p>
+    <p><code>no-store</code>: do not store the response at all in any cache.</p>
+
+    <h2>Inspect with curl -v</h2>
+    <p class="small">Current server origin: <code id="cache-origin">(loading...)</code></p>
+    <pre id="curl-cache-public">curl -v ...</pre>
+    <pre id="curl-cache-private">curl -v ...</pre>
+    <pre id="curl-cache-no-store">curl -v ...</pre>
+
+    <p class="small">Use <code>-v</code> to see response headers in the terminal.</p>
     <p><a href="/">Back</a></p>
   </main>
+  <script src="/public/js/cache.js"></script>
 </body>
 </html>

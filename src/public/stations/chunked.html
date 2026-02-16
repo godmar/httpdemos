@@ -9,9 +9,11 @@
 <body>
   <main>
     <h1>Chunked Transfer Encoding</h1>
-    <p>Use curl and observe chunks arriving over time.</p>
-    <pre>curl -i http://localhost:3000/api/chunked/time?count=4\&intervalMs=250</pre>
+    <p>Use curl and observe chunks arriving over time (default delay is 1 second between chunks).</p>
+    <p class="small">Current server origin: <code id="chunked-origin">(loading...)</code></p>
+    <pre id="curl-chunked">curl -i ...</pre>
     <p><a href="/">Back</a></p>
   </main>
+  <script src="/public/js/chunked.js"></script>
 </body>
 </html>

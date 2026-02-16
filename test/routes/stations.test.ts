@@ -16,7 +16,9 @@ test('forms station handles GET query and POST urlencoded body', async (t) => {
     url: '/stations/forms/search?q=cache+control'
   })
   assert.equal(getRes.statusCode, 200)
-  assert.equal(getRes.json().query.q, 'cache control')
+  assert.match(getRes.headers['content-type'] ?? '', /text\/html/)
+  assert.match(getRes.payload, /GET Form Result/)
+  assert.match(getRes.payload, /cache control/)
 
   const postRes = await app.inject({
     method: 'POST',
@@ -25,8 +27,9 @@ test('forms station handles GET query and POST urlencoded body', async (t) => {
     payload: 'username=alice&password=secret'
   })
   assert.equal(postRes.statusCode, 200)
-  assert.equal(postRes.json().station, 'forms-post')
-  assert.equal(postRes.json().fields.username, 'alice')
+  assert.match(postRes.headers['content-type'] ?? '', /text\/html/)
+  assert.match(postRes.payload, /POST Form Result/)
+  assert.match(postRes.payload, /alice/)
 })
 
 test('fetch-json station enforces json content-type', async (t) => {
@@ -50,8 +53,41 @@ test('fetch-json station enforces json content-type', async (t) => {
   assert.equal(badRes.statusCode, 415)
 })
 
-test('PUT todo is idempotent and retrievable', async (t) => {
+test('front-page barcode endpoint returns SVG image', async (t) => {
   const app = await build(t)
+
+  const res = await app.inject({
+    method: 'GET',
+    url: '/api/meta/qr.svg?text=http%3A%2F%2F192.168.1.7%3A3000'
+  })
+
+  assert.equal(res.statusCode, 200)
+  assert.match(res.headers['content-type'] ?? '', /image\/svg\+xml/)
+  assert.match(res.payload, /<svg/)
+})
+
+test('todos API supports POST/GET collection and idempotent PUT item updates', async (t) => {
+  const app = await build(t)
+
+  const createRes = await app.inject({
+    method: 'POST',
+    url: '/api/todos',
+    headers: { 'content-type': 'application/json' },
+    payload: { title: 'Read RFC 9110', done: false }
+  })
+  assert.equal(createRes.statusCode, 201)
+  const createdTodo = createRes.json().todo
+  assert.ok(createdTodo.id)
+  assert.equal(createRes.headers.location, `/api/todos/${createdTodo.id}`)
+
+  const listRes = await app.inject({
+    method: 'GET',
+    url: '/api/todos'
+  })
+  assert.equal(listRes.statusCode, 200)
+  assert.ok(Array.isArray(listRes.json().todos))
+  assert.equal(listRes.json().count, listRes.json().todos.length)
+  assert.ok(listRes.json().todos.some((todo: { id: string }) => todo.id === createdTodo.id))
 
   const payload = { title: 'Read RFC 9110', done: false }
   const put1 = await app.inject({

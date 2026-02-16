@@ -35,6 +35,18 @@ function randomId (size = 16): string {
 }
 
 export const store = {
+  createTodo (title: string, done: boolean): Todo {
+    const id = randomId(8)
+    const todo: Todo = {
+      id,
+      title,
+      done,
+      updatedAt: new Date().toISOString()
+    }
+    todos.set(id, todo)
+    return todo
+  },
+
   upsertTodo (id: string, title: string, done: boolean): Todo {
     const todo: Todo = {
       id,
@@ -48,6 +60,10 @@ export const store = {
 
   getTodo (id: string): Todo | undefined {
     return todos.get(id)
+  },
+
+  listTodos (): Todo[] {
+    return Array.from(todos.values())
   },
 
   deleteTodo (id: string): boolean {
