@@ -9,9 +9,20 @@
 <body>
   <main>
     <h1>CORS + Preflight</h1>
-    <p class="small">Demo endpoint allows only <code>Origin: https://example.edu</code>.</p>
+    <p>CORS controls whether a browser allows frontend JavaScript from one origin to read responses from another origin.</p>
+    <p>For non-simple cross-origin requests (custom headers, JSON body, non-GET methods), the browser sends an <code>OPTIONS</code> preflight first.</p>
+    <p>The server here allows only <code>Origin: https://example.edu</code> and rejects other origins.</p>
     <p class="small">Current server origin: <code id="cors-origin">(loading...)</code></p>
-    <pre id="curl-cors-options">curl -i -X OPTIONS ...</pre>
+
+    <h2>Allowed Origin Preflight (expected 204)</h2>
+    <pre id="curl-cors-options-allowed">curl -i -X OPTIONS ...</pre>
+
+    <h2>Disallowed Origin Preflight (expected 403)</h2>
+    <p class="small">Example blocked domain: <code>https://evil.example</code></p>
+    <pre id="curl-cors-options-denied">curl -i -X OPTIONS ...</pre>
+
+    <h2>Allowed Origin POST (expected 200)</h2>
+    <pre id="curl-cors-post-allowed">curl -i -X POST ...</pre>
     <p><a href="/">Back</a></p>
   </main>
   <script src="/public/js/cors.js"></script>
