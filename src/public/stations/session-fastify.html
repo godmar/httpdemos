@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Session Auth via @fastify/session</title>
+  <link rel="stylesheet" href="/public/styles.css" />
+</head>
+<body>
+  <main>
+    <h1>Session Auth via @fastify/session</h1>
+    <p>
+      This station demonstrates the same session-cookie workflow as
+      <a href="/stations/session-auth">Station 7 (hand-rolled sessions)</a>,
+      but uses the <code>@fastify/session</code> plugin instead.
+    </p>
+    <p>
+      Key differences: the plugin signs cookies automatically, manages the
+      session lifecycle (create/save/destroy) for you, and provides
+      <code>request.session</code> as a first-class API.
+      <code>request.session.destroy()</code> clears the store entry and cookie
+      in one call.
+    </p>
+    <section>
+      <label>Username: <input id="u" value="student" /></label>
+      <button id="login">Login</button>
+      <button id="me">Who am I?</button>
+      <button id="mutate">POST with CSRF</button>
+      <button id="logout">Logout</button>
+      <pre id="out">(waiting)</pre>
+    </section>
+    <section>
+      <h2>Inspect with curl</h2>
+      <p class="small">Current server origin: <code id="sf-origin">(loading...)</code></p>
+      <pre id="sf-curl-login">curl -i ...</pre>
+      <pre id="sf-curl-me">curl -i ...</pre>
+      <pre id="sf-curl-denied">curl -i ...</pre>
+      <pre id="sf-curl-csrf">curl -i ...</pre>
+      <pre id="sf-curl-logout">curl -i ...</pre>
+      <p class="small">
+        The signed cookie is handled transparently by curl's <code>-c</code>/<code>-b</code> flags.
+        The CSRF example uses <code>jq</code> to extract <code>csrfToken</code> from JSON.
+      </p>
+    </section>
+    <p><a href="/">Back</a></p>
+  </main>
+  <script src="/public/js/session-fastify.js"></script>
+  <script src="/public/js/session-fastify-curl.js"></script>
+</body>
+</html>

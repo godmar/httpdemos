@@ -183,6 +183,59 @@ test('session auth requires csrf token for state-changing action', async (t) => 
   assert.equal(allowed.statusCode, 200)
 })
 
+test('session-fastify auth requires csrf token and supports destroy', async (t) => {
+  const app = await build(t)
+
+  const login = await app.inject({
+    method: 'POST',
+    url: '/api/session-fastify/login',
+    headers: { 'content-type': 'application/json' },
+    payload: { username: 'student' }
+  })
+  assert.equal(login.statusCode, 200)
+  const cookie = firstCookie(login.headers['set-cookie'])
+  const csrf = login.json().csrfToken as string
+  assert.ok(cookie.includes('fastify_session_id='))
+  assert.ok(csrf.length > 10)
+
+  const me = await app.inject({
+    method: 'GET',
+    url: '/api/session-fastify/me',
+    headers: { cookie }
+  })
+  assert.equal(me.statusCode, 200)
+  assert.equal(me.json().authenticated, true)
+
+  const blocked = await app.inject({
+    method: 'POST',
+    url: '/api/session-fastify/protected-action',
+    headers: { cookie }
+  })
+  assert.equal(blocked.statusCode, 403)
+
+  const allowed = await app.inject({
+    method: 'POST',
+    url: '/api/session-fastify/protected-action',
+    headers: { cookie, 'x-csrf-token': csrf }
+  })
+  assert.equal(allowed.statusCode, 200)
+
+  const logout = await app.inject({
+    method: 'POST',
+    url: '/api/session-fastify/logout',
+    headers: { cookie }
+  })
+  assert.equal(logout.statusCode, 200)
+  assert.equal(logout.json().loggedOut, true)
+
+  const meAfterLogout = await app.inject({
+    method: 'GET',
+    url: '/api/session-fastify/me',
+    headers: { cookie }
+  })
+  assert.equal(meAfterLogout.statusCode, 401)
+})
+
 test('jwt auth supports login, bearer access, and rotating refresh token', async (t) => {
   const app = await build(t)
 
