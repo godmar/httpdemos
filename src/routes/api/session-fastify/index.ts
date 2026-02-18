@@ -24,7 +24,7 @@ const sessionFastifyApi: FastifyPluginAsync = async (fastify): Promise<void> => 
   })
 
   await fastify.register(fastifyCsrf, {
-    sessionPlugin: '@fastify/session'
+    sessionPlugin: '@fastify/session' // store the CSRF secret in request.session._csrf rather than a separate cookie
   })
 
   fastify.post('/login', async (request, reply) => {
