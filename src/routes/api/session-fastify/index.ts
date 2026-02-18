@@ -11,10 +11,16 @@ declare module 'fastify' {
 
 const sessionFastifyApi: FastifyPluginAsync = async (fastify): Promise<void> => {
   await fastify.register(fastifySession, {
-    secret: 'dev-fastify-session-secret-32chars!',
-    cookieName: 'fastify_session_id',
-    cookie: { path: '/', httpOnly: true, sameSite: 'lax', maxAge: 3600_000, secure: false },
-    saveUninitialized: false
+    secret: 'dev-fastify-session-secret-32chars!', // min 32 chars; used to sign the cookie value
+    cookieName: 'fastify_session_id',               // distinct from the hand-rolled demo_session_id
+    cookie: {
+      path: '/',
+      httpOnly: true,                // not accessible via document.cookie
+      sameSite: 'lax',               // sent on same-site and top-level cross-site navigations
+      maxAge: 3600_000,              // milliseconds (unlike @fastify/cookie which uses seconds)
+      secure: false                  // allow HTTP in dev; set true behind HTTPS in production
+    },
+    saveUninitialized: false         // don't persist a session until something is written to it
   })
 
   await fastify.register(fastifyCsrf, {
