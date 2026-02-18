@@ -1,13 +1,12 @@
-import { randomBytes } from 'node:crypto'
 import { FastifyPluginAsync } from 'fastify'
 import fastifySession from '@fastify/session'
+import fastifyCsrf from '@fastify/csrf-protection'
 import { ensureJsonBody } from '../../../lib/http'
 
 declare module 'fastify' {
   interface Session {
     username?: string
     loginAt?: number
-    csrfToken?: string
   }
 }
 
@@ -17,6 +16,10 @@ const sessionFastifyApi: FastifyPluginAsync = async (fastify): Promise<void> => 
     cookieName: 'fastify_session_id',
     cookie: { path: '/', httpOnly: true, sameSite: 'lax', maxAge: 3600_000, secure: false },
     saveUninitialized: false
+  })
+
+  await fastify.register(fastifyCsrf, {
+    sessionPlugin: '@fastify/session'
   })
 
   fastify.post('/login', async (request, reply) => {
@@ -32,10 +35,9 @@ const sessionFastifyApi: FastifyPluginAsync = async (fastify): Promise<void> => 
       }
     }
 
-    const csrfToken = randomBytes(12).toString('hex')
     request.session.username = username
     request.session.loginAt = Date.now()
-    request.session.csrfToken = csrfToken
+    const csrfToken = await reply.generateCsrf()
 
     return {
       station: 'session-fastify',
@@ -50,6 +52,8 @@ const sessionFastifyApi: FastifyPluginAsync = async (fastify): Promise<void> => 
       return { error: 'not authenticated' }
     }
 
+    const csrfToken = await reply.generateCsrf()
+
     return {
       station: 'session-fastify',
       authenticated: true,
@@ -57,26 +61,23 @@ const sessionFastifyApi: FastifyPluginAsync = async (fastify): Promise<void> => 
         username: request.session.username,
         loginAt: request.session.loginAt
       },
-      csrfToken: request.session.csrfToken
+      csrfToken
     }
   })
 
-  fastify.post('/protected-action', async (request, reply) => {
+  fastify.post('/protected-action', {
+    preValidation: fastify.csrfProtection
+  }, async (request, reply) => {
     if (!request.session.username) {
       reply.code(401)
       return { error: 'not authenticated' }
     }
 
-    if (request.headers['x-csrf-token'] !== request.session.csrfToken) {
-      reply.code(403)
-      return { error: 'csrf token invalid' }
-    }
-
     return { ok: true, message: 'state-changing action accepted' }
   })
 
-  fastify.post('/logout', async (request, reply) => {
-    request.session.destroy()
+  fastify.post('/logout', async (_request, reply) => {
+    _request.session.destroy()
     return { loggedOut: true }
   })
 }

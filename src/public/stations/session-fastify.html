@@ -15,9 +15,12 @@
       but uses the <code>@fastify/session</code> plugin instead.
     </p>
     <p>
-      Key differences: the plugin signs cookies automatically, manages the
-      session lifecycle (create/save/destroy) for you, and provides
+      Key differences from station 7: the plugin signs cookies automatically,
+      manages the session lifecycle (create/save/destroy) for you, and exposes
       <code>request.session</code> as a first-class API.
+      CSRF tokens are issued via <code>reply.generateCsrf()</code> and
+      validated automatically by the <code>@fastify/csrf-protection</code>
+      <code>preValidation</code> hook — no manual token comparison needed.
       <code>request.session.destroy()</code> clears the store entry and cookie
       in one call.
     </p>
