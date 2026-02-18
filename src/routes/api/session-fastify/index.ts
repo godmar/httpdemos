@@ -1,7 +1,6 @@
 import { FastifyPluginAsync } from 'fastify'
 import fastifySession from '@fastify/session'
 import fastifyCsrf from '@fastify/csrf-protection'
-import { ensureJsonBody } from '../../../lib/http'
 
 declare module 'fastify' {
   interface Session {
@@ -25,14 +24,9 @@ const sessionFastifyApi: FastifyPluginAsync = async (fastify): Promise<void> => 
   fastify.post('/login', async (request, reply) => {
     let username = 'anonymous'
 
-    const parsed = ensureJsonBody(request)
-    if (parsed.ok && typeof parsed.body.username === 'string' && parsed.body.username.trim() !== '') {
-      username = parsed.body.username.trim()
-    } else if (!parsed.ok) {
-      const body = (request.body ?? {}) as Record<string, unknown>
-      if (typeof body.username === 'string' && body.username.trim() !== '') {
-        username = body.username.trim()
-      }
+    const body = (request.body ?? {}) as Record<string, unknown>
+    if (typeof body.username === 'string' && body.username.trim() !== '') {
+      username = body.username.trim()
     }
 
     request.session.username = username
