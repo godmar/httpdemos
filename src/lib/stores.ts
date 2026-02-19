@@ -22,6 +22,7 @@ export type RefreshTokenRecord = {
   tokenId: string
   userId: string
   parentId?: string
+  familyId: string
   revoked: boolean
   expiresAt: number
 }
@@ -90,12 +91,13 @@ export const store = {
     sessions.delete(id)
   },
 
-  issueRefreshToken (userId: string, ttlSeconds: number, parentId?: string): RefreshTokenRecord {
+  issueRefreshToken (userId: string, ttlSeconds: number, parentId?: string, familyId?: string): RefreshTokenRecord {
     const tokenId = randomId()
     const record: RefreshTokenRecord = {
       tokenId,
       userId,
       parentId,
+      familyId: familyId ?? tokenId,
       revoked: false,
       expiresAt: Math.floor(Date.now() / 1000) + ttlSeconds
     }
@@ -110,5 +112,16 @@ export const store = {
   revokeRefreshToken (tokenId: string): void {
     const record = refreshTokens.get(tokenId)
     if (record) record.revoked = true
+  },
+
+  revokeTokenFamily (familyId: string): number {
+    let count = 0
+    for (const record of refreshTokens.values()) {
+      if (record.familyId === familyId && !record.revoked) {
+        record.revoked = true
+        count++
+      }
+    }
+    return count
   }
 }

@@ -314,6 +314,86 @@ test('jwt-fastify auth supports login, bearer access, and rotating refresh token
   assert.equal(replayOld.statusCode, 401)
 })
 
+test('jwt refresh token reuse revokes entire token family', async (t) => {
+  const app = await build(t)
+
+  // Step 1: Login → get cookie A
+  const login = await app.inject({
+    method: 'POST',
+    url: '/api/jwt/login',
+    headers: { 'content-type': 'application/json' },
+    payload: { username: 'family-test' }
+  })
+  assert.equal(login.statusCode, 200)
+  const cookieA = firstCookie(login.headers['set-cookie'])
+
+  // Step 2: Rotate with A → get cookie B (A is now revoked)
+  const rotateAB = await app.inject({
+    method: 'POST',
+    url: '/api/jwt/refresh',
+    headers: { cookie: cookieA }
+  })
+  assert.equal(rotateAB.statusCode, 200)
+  const cookieB = firstCookie(rotateAB.headers['set-cookie'])
+
+  // Step 3: Replay cookie A → 401 (triggers family revocation)
+  const replayA = await app.inject({
+    method: 'POST',
+    url: '/api/jwt/refresh',
+    headers: { cookie: cookieA }
+  })
+  assert.equal(replayA.statusCode, 401)
+  assert.match(replayA.json().error, /reuse detected/)
+
+  // Step 4: Try cookie B → also 401 (proves the active token was revoked too)
+  const tryB = await app.inject({
+    method: 'POST',
+    url: '/api/jwt/refresh',
+    headers: { cookie: cookieB }
+  })
+  assert.equal(tryB.statusCode, 401)
+})
+
+test('jwt-fastify refresh token reuse revokes entire token family', async (t) => {
+  const app = await build(t)
+
+  // Step 1: Login → get cookie A
+  const login = await app.inject({
+    method: 'POST',
+    url: '/api/jwt-fastify/login',
+    headers: { 'content-type': 'application/json' },
+    payload: { username: 'family-test' }
+  })
+  assert.equal(login.statusCode, 200)
+  const cookieA = firstCookie(login.headers['set-cookie'])
+
+  // Step 2: Rotate with A → get cookie B (A is now revoked)
+  const rotateAB = await app.inject({
+    method: 'POST',
+    url: '/api/jwt-fastify/refresh',
+    headers: { cookie: cookieA }
+  })
+  assert.equal(rotateAB.statusCode, 200)
+  const cookieB = firstCookie(rotateAB.headers['set-cookie'])
+
+  // Step 3: Replay cookie A → 401 (triggers family revocation)
+  const replayA = await app.inject({
+    method: 'POST',
+    url: '/api/jwt-fastify/refresh',
+    headers: { cookie: cookieA }
+  })
+  assert.equal(replayA.statusCode, 401)
+  assert.match(replayA.json().error, /reuse detected/)
+
+  // Step 4: Try cookie B → also 401 (proves the active token was revoked too)
+  const tryB = await app.inject({
+    method: 'POST',
+    url: '/api/jwt-fastify/refresh',
+    headers: { cookie: cookieB }
+  })
+  assert.equal(tryB.statusCode, 401)
+})
+
 test('conditional endpoint returns 304 with matching ETag', async (t) => {
   const app = await build(t)
 

@@ -105,14 +105,20 @@ const jwtFastifyApi: FastifyPluginAsync = async (fastify): Promise<void> => {
     }
 
     const oldRecord = store.getRefreshToken(decoded.jti)
-    if (!oldRecord || oldRecord.revoked || oldRecord.expiresAt <= Math.floor(Date.now() / 1000)) {
+    if (!oldRecord || oldRecord.expiresAt <= Math.floor(Date.now() / 1000)) {
       reply.code(401)
-      return { error: 'refresh token invalid or revoked' }
+      return { error: 'refresh token invalid or expired' }
+    }
+
+    if (oldRecord.revoked) {
+      store.revokeTokenFamily(oldRecord.familyId)
+      reply.code(401)
+      return { error: 'refresh token reuse detected' }
     }
 
     // Revoke old token before issuing new one (rotation — replay of old cookie → 401)
     store.revokeRefreshToken(oldRecord.tokenId)
-    const nextRecord = store.issueRefreshToken(oldRecord.userId, 3600, oldRecord.tokenId)
+    const nextRecord = store.issueRefreshToken(oldRecord.userId, 3600, oldRecord.tokenId, oldRecord.familyId)
 
     const accessToken = fastify.jwt.access.sign({ sub: oldRecord.userId, scope: ['read:profile'] })
     const nextRefreshToken = fastify.jwt.refresh.sign({ sub: oldRecord.userId, jti: nextRecord.tokenId, scope: ['refresh:token'] })
