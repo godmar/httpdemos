@@ -51,8 +51,11 @@ const jwtFastifyApi: FastifyPluginAsync = async (fastify): Promise<void> => {
 
     const refreshRecord = store.issueRefreshToken(username, 3600)
 
-    // fastify.jwt.access.sign / fastify.jwt.refresh.sign are synchronous (fast-jwt under the hood)
+    // fastify.jwt.access.sign / fastify.jwt.refresh.sign are synchronous (fast-jwt under the hood).
+    // Access tokens have no jti — they're short-lived and not individually revocable.
     const accessToken = fastify.jwt.access.sign({ sub: username, scope: ['read:profile'] })
+    // Refresh tokens carry a jti (JWT ID, RFC 7519) that links the signed token the client
+    // holds to a server-side record in the store, giving the server a handle to revoke it.
     const refreshToken = fastify.jwt.refresh.sign({ sub: username, jti: refreshRecord.tokenId, scope: ['refresh:token'] })
 
     reply.setCookie(REFRESH_COOKIE, refreshToken, {
@@ -83,6 +86,9 @@ const jwtFastifyApi: FastifyPluginAsync = async (fastify): Promise<void> => {
     return { authenticated: true, claims: decoded }
   })
 
+  // Clients call /refresh when the short-lived access token expires (or is about to).
+  // Either reactively (got a 401, refresh, retry) or proactively (check exp claim, refresh
+  // before it expires). The refresh token's lifetime (1 h) is the real session duration.
   fastify.post('/refresh', async (request, reply) => {
     const token = request.cookies[REFRESH_COOKIE]
     if (!token) {
