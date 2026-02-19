@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>JWT Auth via @fastify/jwt</title>
+  <link rel="stylesheet" href="/public/styles.css" />
+</head>
+<body>
+  <main>
+    <h1>JWT Access + Rotating Refresh via @fastify/jwt</h1>
+    <p>
+      This station demonstrates the same JWT workflow as
+      <a href="/stations/jwt-auth">Station 8 (hand-rolled JWT)</a>,
+      but uses <code>@fastify/jwt</code> instead of calling <code>jsonwebtoken</code> directly.
+    </p>
+    <p>
+      Key differences: two scoped plugin instances (<code>fastify.access</code> and
+      <code>fastify.refresh</code>) handle separate secrets.
+      <code>request.accessVerify()</code> reads and verifies the
+      <code>Authorization: Bearer</code> header automatically.
+      Signing and verification are synchronous (fast-jwt under the hood);
+      refresh token rotation and revocation still use the in-memory store.
+    </p>
+    <section>
+      <label>Username: <input id="user" value="api-user" /></label>
+      <button id="login">Login</button>
+      <button id="me">GET /me</button>
+      <button id="refresh">Refresh</button>
+      <button id="logout">Logout</button>
+      <pre id="out">(waiting)</pre>
+    </section>
+    <section>
+      <h2>Inspect with curl</h2>
+      <p class="small">Current server origin: <code id="jf-origin">(loading...)</code></p>
+      <pre id="jf-curl-login">LOGIN_JSON=...</pre>
+      <pre id="jf-curl-me">curl -i ...</pre>
+      <pre id="jf-curl-refresh">REFRESH_JSON=...</pre>
+      <pre id="jf-curl-me2">curl -i ...</pre>
+      <pre id="jf-curl-replay">curl -i ...</pre>
+      <pre id="jf-curl-logout">curl -i ...</pre>
+      <p class="small">This flow uses <code>jq</code> to extract token values and stores cookies in <code>jf-cookies.txt</code>.</p>
+    </section>
+    <p class="small">JWT signing/verification in this station uses <code>@fastify/jwt</code> (backed by fast-jwt).</p>
+    <p><a href="/">Back</a></p>
+  </main>
+  <script src="/public/js/jwt-fastify.js"></script>
+  <script src="/public/js/jwt-fastify-curl.js"></script>
+</body>
+</html>

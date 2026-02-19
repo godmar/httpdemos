@@ -275,6 +275,45 @@ test('jwt auth supports login, bearer access, and rotating refresh token', async
   assert.equal(replayOld.statusCode, 401)
 })
 
+test('jwt-fastify auth supports login, bearer access, and rotating refresh token', async (t) => {
+  const app = await build(t)
+
+  const login = await app.inject({
+    method: 'POST',
+    url: '/api/jwt-fastify/login',
+    headers: { 'content-type': 'application/json' },
+    payload: { username: 'api-user' }
+  })
+  assert.equal(login.statusCode, 200)
+  const access = login.json().accessToken as string
+  const refreshCookie = firstCookie(login.headers['set-cookie'])
+  assert.ok(access.length > 20)
+  assert.ok(refreshCookie.includes('demo_refresh_token='))
+
+  const me = await app.inject({
+    method: 'GET',
+    url: '/api/jwt-fastify/me',
+    headers: { authorization: `Bearer ${access}` }
+  })
+  assert.equal(me.statusCode, 200)
+  assert.equal(me.json().authenticated, true)
+
+  const rotate = await app.inject({
+    method: 'POST',
+    url: '/api/jwt-fastify/refresh',
+    headers: { cookie: refreshCookie }
+  })
+  assert.equal(rotate.statusCode, 200)
+  assert.equal(rotate.json().rotated, true)
+
+  const replayOld = await app.inject({
+    method: 'POST',
+    url: '/api/jwt-fastify/refresh',
+    headers: { cookie: refreshCookie }
+  })
+  assert.equal(replayOld.statusCode, 401)
+})
+
 test('conditional endpoint returns 304 with matching ETag', async (t) => {
   const app = await build(t)
 
