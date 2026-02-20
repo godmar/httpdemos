@@ -16,6 +16,10 @@ declare module '@fastify/jwt' {
 }
 
 declare module 'fastify' {
+  interface FastifyInstance {
+    // Decorated below; reusable preHandler that verifies the access Bearer token.
+    authenticate: (request: import('fastify').FastifyRequest, reply: import('fastify').FastifyReply) => Promise<void>
+  }
   interface FastifyRequest {
     // Added by the 'access' namespace registration below; reads the Bearer header.
     accessVerify<T extends object = object>(): Promise<T>
@@ -41,6 +45,21 @@ const jwtFastifyApi: FastifyPluginAsync = async (fastify): Promise<void> => {
     secret: REFRESH_SECRET,
     namespace: 'refresh',       // fastify.jwt.refresh = JWT instance
     sign: { expiresIn: '1h' }   // default expiry for tokens signed via fastify.jwt.refresh
+  })
+
+  // Fastify's equivalent of Express middleware is the lifecycle hook system.
+  // Instead of app.use(authMiddleware), define a function and attach it as a
+  // `preHandler` on individual routes via the route options object, or as an
+  // `onRequest` hook on a scoped plugin to protect an entire group of routes.
+  // decorate() attaches the function to the Fastify instance so it's available
+  // to any child plugin registered within the same encapsulation context.
+  fastify.decorate('authenticate', async (request, reply) => {
+    try {
+      await request.accessVerify()
+    } catch (_e) {
+      reply.code(401)
+      reply.send({ error: 'missing or invalid bearer token' })
+    }
   })
 
   fastify.post('/login', async (request, reply) => {
@@ -83,6 +102,15 @@ const jwtFastifyApi: FastifyPluginAsync = async (fastify): Promise<void> => {
       return { error: 'missing or invalid bearer token' }
     }
 
+    return { authenticated: true, claims: decoded }
+  })
+
+  // Idiomatic Fastify: pass the authenticate function as a preHandler in the route
+  // options object. Fastify runs preHandlers after parsing but before the handler.
+  // If authenticate sends a 401, Fastify skips the handler entirely.
+  // This is the declarative, per-route alternative to Express-style middleware.
+  fastify.get('/requiresauth', { preHandler: [fastify.authenticate] }, async (request) => {
+    const decoded = await request.accessVerify<AccessPayload>()
     return { authenticated: true, claims: decoded }
   })
 
